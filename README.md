@@ -1,5 +1,17 @@
 # Vue2 源码学习
 
+## 源码如何编译
+
+*采用`rollup`编译工具，script 命令 `node scripts/build.js`*
+
+*`scripts/config.js` builds 描述了所有环境的编译*
+
+*`runtime-with-compiler.ts` 为 `rollup` 编译配置入口文件*
+
+## new Vue({xxxx}) 做了哪些工作
+
+
+
 ## 前端模块化
 
 _cjs、amd、umd、esm_

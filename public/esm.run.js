@@ -1,4 +1,5 @@
 import Vue from "../lib/main.esm.js";
-console.log(Vue);
-const instance = new Vue({ name: "liut" });
-console.log(instance);
+const options = { el: "#root", data: () => ({ name: "liut" }) };
+const vm = new Vue(options);
+console.dir(vm);
+window.vm = vm;
