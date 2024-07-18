@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vue2</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+	</head>
+
+	<body>
+		<div id="root">
+			<button v-on:click="increase">加</button>
+			<span> {{count}} </span>
+			<span> {{doubleCount}} </span>
+			<span> {{quattuorCount}} </span>
+			<button v-on:click="decrease">减</button>
+		</div>
+
+		<script>
+			const data = { count: 0 };
+			const computed = {
+				doubleCount: function () {
+					return this.count * 2;
+				},
+				quattuorCount: function () {
+					return this.count * 4;
+				},
+			};
+			const methods = {
+				increase() {
+					this.count++;
+				},
+				decrease() {
+					this.count--;
+				},
+			};
+			const options = { data, methods, computed };
+			const vm = new Vue({ el: "#root", ...options });
+			console.dir(Vue);
+			const Profile = Vue.extend({
+				template: "<strong>{{tag}}</strong>",
+				data: () => ({
+					tag: "vue extend",
+				}),
+			});
+		</script>
+	</body>
+</html>

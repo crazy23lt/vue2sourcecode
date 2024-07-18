@@ -71,3 +71,13 @@ _代码编译成符合 es 模块规范的代码包。_
 
 - _editorconfig_ 负责编辑器编码时格式
   - .editorconfig
+
+
+## 参考
+
+- [Relsola](https://relsola.github.io/blog/)
+- [React技术揭秘](https://react.iamkasong.com/)
+- [Vue.js 技术揭秘](https://ustbhuangyi.github.io/vue-analysis/)
+- [regexper](https://regexper.com/)
+- [Vue2 Template Explorer](https://v2.template-explorer.vuejs.org/)
+- [Vue3 Template Explorer](https://template-explorer.vuejs.org/)
