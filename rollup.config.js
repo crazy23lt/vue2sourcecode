@@ -26,14 +26,15 @@ const umdCompile = {
 
 module.exports = [
 	{
-		input: "./src/main.ts",
+		input: "./src/main.js",
 		output: [
 			// Object.assign(baseCompile, amdCompile),
 			// Object.assign(baseCompile, cjsCompile),
-			Object.assign(baseCompile, esmCompile),
-			// Object.assign(baseCompile, umdCompile),
+			// Object.assign(baseCompile, esmCompile),
+			Object.assign(baseCompile, umdCompile),
 		],
-		plugins: [resolve(), commonjs(), typescript({ module: "ESNext" })],
+		// plugins: [resolve(), commonjs(), typescript({ module: "ESNext" })],
+		plugins: [resolve(), commonjs()],
 		external: [],
 		cache: [],
 	},

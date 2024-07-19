@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Rollup Demo</title>
+	</head>
+	<!-- <script src="../lib/main.umd.js"></script> -->
+	<body>
+		<!-- <script src="require.min.js" data-main="main" ></script> -->
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Rollup Demo</title>
-</head>
-
-<body>
-	<!-- <script src="require.min.js" data-main="main" ></script> -->
-
-	<script type="module" src="./esm.run.js"></script>
-
-	<!-- <script src="../lib/main.umd.js"></script>
+		<!-- <script src="../lib/main.umd.js"></script>
 	<script>
 		console.log(Vue);
 		const instance = new Vue({ name: "liut" });
 		console.log(instance);
 	</script> -->
-	<div id="root"></div>
-</body>
-
+		<div id="root" data-main="main"></div>
+	</body>
+	<script>
+		const options = { el: "#root", data: () => ({ name: "liut" }) };
+		const vm = new Vue(options);
+		console.dir(vm);
+	</script>
 </html>
