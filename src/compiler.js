@@ -77,10 +77,12 @@ function parseHTML(html, options) {
 				}
 				// handle end tag
 				const endTagMatch = html.match(endTag);
+				debugger;
 				if (endTagMatch) {
 					const curIndex = index;
 					advance(endTagMatch[0].length);
 					parseEndTag(endTagMatch[1], curIndex, index);
+
 					continue;
 				}
 			}
