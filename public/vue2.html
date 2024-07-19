@@ -36,13 +36,31 @@
 			};
 			const options = { data, methods, computed };
 			const vm = new Vue({ el: "#root", ...options });
-			console.dir(Vue);
-			const Profile = Vue.extend({
-				template: "<strong>{{tag}}</strong>",
-				data: () => ({
-					tag: "vue extend",
-				}),
-			});
+			const functionTypeCheckRE = /^\s*function (\w+)/;
+			const isArray = Array.isArray;
+			function getType(fn) {
+				const match = fn && fn.toString().match(functionTypeCheckRE);
+				return match ? match[1] : "";
+			}
+
+			function isSameType(a, b) {
+				return getType(a) === getType(b);
+			}
+
+			function getTypeIndex(type, expectedTypes) {
+				if (!isArray(expectedTypes)) {
+					return isSameType(expectedTypes, type) ? 0 : -1;
+				}
+				for (let i = 0, len = expectedTypes.length; i < len; i++) {
+					if (isSameType(expectedTypes[i], type)) {
+						return i;
+					}
+				}
+				return -1;
+			}
+
+			const booleanIndex = getTypeIndex(Boolean, String);
+			console.log(booleanIndex);
 		</script>
 	</body>
 </html>
