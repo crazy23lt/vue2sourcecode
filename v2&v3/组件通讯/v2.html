@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>V2</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script>
+			/**
+			 * 通过 props & emit 进行数据通讯
+			 * props 两种书写形式：数组 & 对象
+			 * - 前者简洁，后者能够配置更多选项（类型、默认值等）
+			 * - 一般类型：String、Number、Boolean、Array、Object、Date、Function、Symbol，以及自定义构造函数
+			 */
+
+			Vue.component("child-global", {
+				props: ["count"],
+				methods: {
+					reset() {
+						this.$emit("reset");
+					},
+				},
+				render(h) {
+					return h("button", { on: { click: this.reset } }, this.count);
+				},
+			});
+			const childLocal = {
+				props: ["count"],
+				methods: {
+					reset() {
+						this.$emit("reset");
+					},
+				},
+				render(h) {
+					return h("button", { on: { click: this.reset } }, this.count);
+				},
+			};
+			const parent = new Vue({
+				components: { childLocal },
+				data: () => ({ count: 0 }),
+				computed: {
+					dc() {
+						return new DoubleCount(this.count);
+					},
+				},
+				methods: {
+					increase() {
+						this.count++;
+					},
+					decrease() {
+						this.count--;
+					},
+					reset() {
+						this.count = 0;
+					},
+				},
+				render(h) {
+					return h("div", [
+						h("button", { on: { click: this.increase } }, "加"),
+						h("div", [
+							h("span", "local"),
+							h(childLocal, {
+								props: {
+									count: this.count,
+								},
+								on: {
+									reset: this.reset,
+								},
+							}),
+						]),
+						h("div", [
+							h("span", "global"),
+							h("child-global", {
+								props: {
+									count: this.count,
+								},
+								on: {
+									reset: this.reset,
+								},
+							}),
+						]),
+						h("button", { on: { click: this.decrease } }, "减"),
+					]);
+				},
+			});
+			parent.$mount("#root");
+		</script>
+		<div id="root1"></div>
+		<script>
+			const child = {
+				props: ["value"],
+				methods: {
+					handleInput(e) {
+						this.$emit("onInput", e.target.value);
+					},
+				},
+				render(h) {
+					return h("input", {
+						attrs: { type: "text" },
+						domProps: {
+							value: this.value,
+						},
+						on: {
+							input: this.handleInput,
+						},
+					});
+				},
+			};
+			const rootNode = new Vue({
+				components: { child },
+				data() {
+					return {
+						inputVal: "",
+					};
+				},
+				methods: {
+					handleInput(v) {
+						this.inputVal = v;
+					},
+				},
+				render(h) {
+					return h("div", [
+						h(child, {
+							props: { value: this.inputVal },
+							on: { onInput: this.handleInput },
+						}),
+						h("div", this.inputVal),
+					]);
+				},
+			});
+			rootNode.$mount("#root1");
+		</script>
+	</body>
+</html>

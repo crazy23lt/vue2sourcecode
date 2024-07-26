@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Rollup Demo</title>
 	</head>
-	<script src="/lib/main.umd.js"></script>
+	<script type="module" src="/public/esm.run.js"></script>
 	<body>
 		<!-- <script src="require.min.js" data-main="main" ></script> -->
 
@@ -17,9 +17,4 @@
 	</script> -->
 		<div id="root" data-main="main"></div>
 	</body>
-	<script>
-		const options = { el: "#root", data: () => ({ name: "liut" }) };
-		const vm = new Vue(options);
-		console.dir(vm);
-	</script>
 </html>

@@ -1,28 +1,52 @@
-export function compileToFunctions(template) {
+const compileToFunctions = (template) => {
 	const ast = parse(template.trim());
-}
-function createASTElement(tag, attrs, parent) {}
-function parse(template) {
+};
+const makeAttrsMap = (attrs) => {
+	const map = {};
+	for (let i = 0, l = attrs.length; i < l; i++) {
+		map[attrs[i].name] = attrs[i].value;
+	}
+	return map;
+};
+const createASTElement = (tag, attrs, parent) => {
+	return {
+		type: 1,
+		tag,
+		attrsList: attrs,
+		attrsMap: makeAttrsMap(attrs),
+		rawAttrsMap: {},
+		parent,
+		children: [],
+	};
+};
+
+const parse = (template) => {
 	const stack = [];
 	let root;
 	let currentParent;
-	parseHTML(template, {
-		start: (tag, attrs, unary, start, end) => {
-			console.log({ tag, attrs, unary, start, end });
-			const element = createASTElement(tag, attrs, currentParent);
-			if (!root) {
-				root = element;
-			}
-			if (!unary) {
-				currentParent = element;
-				stack.push(element);
-			} else {
-				// 自闭合标签
-				closeElement(element);
-			}
-		},
-	});
-}
+	const closeElement = (element) => {};
+	const start = (tag, attrs, unary, start, end) => {
+		console.log({ tag, attrs, unary, start, end });
+		const element = createASTElement(tag, attrs, currentParent);
+		if (!root) {
+			root = element;
+		}
+		if (!unary) {
+			currentParent = element;
+			stack.push(element);
+		} else {
+			// 自闭合标签
+			closeElement(element);
+		}
+	};
+	const end = (tag, start, end) => {
+		const element = stack[stack.length - 1];
+		stack.length -= 1;
+		currentParent = stack[stack.length - 1];
+		closeElement(element);
+	};
+	parseHTML(template, { start, end });
+};
 const unaryTags = [
 	"area",
 	"base",
@@ -60,39 +84,15 @@ const startTagClose = /^\s*(\/?)>/;
 
 const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`);
 
-function parseHTML(html, options) {
+const parseHTML = (html, options) => {
 	const stack = [];
 	let index = 0;
 	let last, lastTag;
-	while (html) {
-		last = html;
-		if (!lastTag) {
-			let textEnd = html.indexOf("<");
-			if (textEnd === 0) {
-				// handle start tag
-				const startTagMatch = parseStartTag();
-				if (startTagMatch) {
-					handleStartTag(startTagMatch);
-					continue;
-				}
-				// handle end tag
-				const endTagMatch = html.match(endTag);
-				debugger;
-				if (endTagMatch) {
-					const curIndex = index;
-					advance(endTagMatch[0].length);
-					parseEndTag(endTagMatch[1], curIndex, index);
-
-					continue;
-				}
-			}
-		}
-	}
-	function advance(n) {
+	const advance = (n) => {
 		index += n;
 		html = html.substring(n);
-	}
-	function parseStartTag() {
+	};
+	const parseStartTag = () => {
 		const start = html.match(startTagOpen);
 		if (start) {
 			const match = {
@@ -119,8 +119,8 @@ function parseHTML(html, options) {
 				return match;
 			}
 		}
-	}
-	function handleStartTag(match) {
+	};
+	const handleStartTag = (match) => {
 		const tagName = match.tagName;
 		const unarySlash = match.unarySlash;
 		const unary = unaryTags.includes(tagName) || !!unarySlash;
@@ -144,6 +144,60 @@ function parseHTML(html, options) {
 		if (options.start) {
 			options.start(tagName, attrs, unary, match.start, match.end);
 		}
+	};
+	const parseEndTag = (tagName, start, end) => {
+		let pos, lowerCasedTagName;
+		if (tagName) {
+			lowerCasedTagName = tagName.toLowerCase();
+			for (pos = stack.length - 1; pos >= 0; pos--) {
+				if (stack[pos].lowerCasedTag === lowerCasedTagName) {
+					break;
+				}
+			}
+		} else {
+			pos = 0;
+		}
+		if (pos >= 0) {
+			for (let i = stack.length - 1; i >= pos; i--) {
+				if (options.end) {
+					options.end(stack[i].tag, start, end);
+				}
+			}
+
+			stack.length = pos;
+			lastTag = pos && stack[pos - 1].tag;
+		}
+	};
+
+	while (html) {
+		last = html;
+		if (!lastTag) {
+			let textEnd = html.indexOf("<");
+
+			if (textEnd === 0) {
+				debugger;
+				// handle start tag
+				const startTagMatch = parseStartTag();
+				if (startTagMatch) {
+					handleStartTag(startTagMatch);
+					continue;
+				}
+				// handle end tag
+				const endTagMatch = html.match(endTag);
+
+				if (endTagMatch) {
+					const curIndex = index;
+					advance(endTagMatch[0].length);
+					parseEndTag(endTagMatch[1], curIndex, index);
+					continue;
+				}
+			}
+		} else {
+			let endTagLength = 0;
+			const stackedTag = lastTag.toLowerCase();
+			parseEndTag(stackedTag);
+		}
 	}
-	function parseEndTag() {}
-}
+};
+
+export { compileToFunctions };

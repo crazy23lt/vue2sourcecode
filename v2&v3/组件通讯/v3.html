@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>V3</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script>
+			const { createApp, defineComponent, h, ref } = Vue;
+			const child = defineComponent({
+				props: ["count"],
+				emits: ["reset"],
+				setup: (props, ctx) => {
+					const reset = () => {
+						ctx.emit("reset");
+					};
+					return () => h("button", { onClick: reset }, props.count);
+				},
+			});
+			const parent = defineComponent(() => {
+				const count = ref(0);
+				const increase = () => {
+					count.value++;
+				};
+				const decrease = () => {
+					count.value--;
+				};
+				const reset = () => {
+					count.value = 0;
+				};
+				return () =>
+					h("div", [
+						h("button", { onClick: increase }, "加"),
+						h(child, { count: count.value, onReset: reset }),
+						h("button", { onClick: decrease }, "减"),
+					]);
+			});
+			createApp(parent).mount("#root");
+		</script>
+		<div id="root1"></div>
+		<script>
+			const CusInput = defineComponent({
+				props: ["modelValue"],
+				emits: ["update:modelValue"],
+				setup(props, ctx) {
+					const update = (e) => {
+						ctx.emit("update:modelValue", e.target.value);
+					};
+					return () =>
+						h("input", { "^value": props.modelValue, onInput: update });
+				},
+			});
+			const root1 = defineComponent(() => {
+				const inputVal = ref("");
+				const onInput = (e) => {
+					inputVal.value = e.target.value;
+				};
+				const model = defineModel();
+				return () =>
+					h("div", [
+						h("input", { "^value": inputVal.value, onInput: onInput }),
+						h("div", inputVal.value),
+						h("input", { "^value": inputVal.value, onInput: onInput }),
+					]);
+			});
+			createApp(root1).mount("#root1");
+		</script>
+	</body>
+</html>

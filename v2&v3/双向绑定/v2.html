@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script>
+			let list = Array.from({ length: 1000000 }, (_, idx) => [idx, idx]);
+			let cache = new Map(list);
+			console.time();
+
+			// list = list.filter((i) => i !== 999999);
+			// let idx = list.findIndex((i) => i === 999999);
+			// if (idx !== -1) {
+			// 	res = list.splice(idx, 1);
+			// }
+			console.timeEnd();
+			console.log(list);
+		</script>
+	</body>
+</html>
